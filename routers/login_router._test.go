@@ -9,14 +9,14 @@ type LoginRoute struct {
 }
 
 func (l LoginRoute) route(req HttpRequest) (r HttpRequest) {
-	body := req.Body
-	if body.email == "" || body.password == "" {
+	email, password := req.Body.email, req.Body.password
+	if email == "" || password == "" {
 		return HttpRequest{
 			StatusCode: 400,
 		}
 	}
 
-	fmt.Printf("body.email: %s", body.email)
+	fmt.Printf("body.email: %s", email)
 	return req
 }
 
