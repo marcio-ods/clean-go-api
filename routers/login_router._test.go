@@ -10,7 +10,7 @@ type LoginRoute struct {
 
 func (l LoginRoute) route(req HttpRequest) (r HttpRequest) {
 	body := req.Body
-	if body.email == "" {
+	if body.email == "" || body.password == "" {
 		return HttpRequest{
 			StatusCode: 400,
 		}
@@ -44,6 +44,23 @@ func TestLoginRouter(t *testing.T) {
 
 	if httpResponse.StatusCode != 400 {
 		t.Error("Should return 400 if no email is provided")
+	}
+
+}
+func TestPasswordIsProvided(t *testing.T) {
+
+	sut := LoginRoute{}
+
+	httpRequest := HttpRequest{
+		Body: body{
+			email: "test@test.com",
+		},
+	}
+
+	httpResponse := sut.route(httpRequest)
+
+	if httpResponse.StatusCode != 400 {
+		t.Error("Should return 400 if no password is provided")
 	}
 
 }
