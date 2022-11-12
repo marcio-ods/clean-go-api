@@ -1,102 +1,106 @@
 package routers
 
-// https://www.youtube.com/watch?v=lvvPlJCMuFw&list=PL9aKtVrF05DyEwK5kdvzrYXFdpZfj1dsG&index=3
-// 13 min
-import (
-	"fmt"
-	"testing"
-)
+// // https://www.youtube.com/watch?v=lvvPlJCMuFw&list=PL9aKtVrF05DyEwK5kdvzrYXFdpZfj1dsG&index=3
+// // 13 min
+// import (
+// 	// "errors"
+// 	"fmt"
+// 	"testing"
+// )
 
-type LoginRoute struct {
-}
+// type MissingParamError struct {
+// 	name string
+// }
 
-func (l LoginRoute) route(req HttpRequest) (r HttpRequest) {
+// func NewMissingParamError(params string) (resp string) {
+// 	e := MissingParamError{}
+// 	e.name = "MissingParamError"
 
-	emptyRequest := HttpRequest{}
-	if emptyRequest == req {
-		return HttpRequest{
-			StatusCode: 500,
-		}
-	}
+// 	resp = fmt.Sprintf("%s: %s", e.name, params)
 
-	email, password := req.Body.email, req.Body.password
-	if email == "" || password == "" {
-		return HttpRequest{
-			StatusCode: 400,
-		}
-	}
+// 	return
+// }
 
-	fmt.Printf("body.email: %s", email)
-	return req
-}
+// type HttpResponse struct {
+// 	StatusCode int
+// 	body       MissingParamError
+// }
 
-type body struct {
-	password string
-	email    string
-}
+// func (h *HttpResponse) BedRequest(paramName string) {
+// 	h.StatusCode = 400
+// 	// h.body = NewMissingParamError(paramName)
+// }
 
-type HttpRequest struct {
-	Body       body
-	StatusCode int
-}
+// func (h *HttpResponse) ServerError() {
+// 	h.StatusCode = 500
+// }
 
-func TestLoginRouter(t *testing.T) {
+// type body struct {
+// 	password string
+// 	email    string
+// }
 
-	sut := LoginRoute{}
+// type HttpRequest struct {
+// 	Body body
+// 	// StatusCode int
+// }
 
-	httpRequest := HttpRequest{
-		Body: body{
-			password: "123456",
-		},
-	}
+// func TestLoginRouter(t *testing.T) {
 
-	httpResponse := sut.route(httpRequest)
-
-	if httpResponse.StatusCode != 400 {
-		t.Error("Should return 400 if no email is provided")
-	}
-
-}
-func TestPasswordIsProvided(t *testing.T) {
-
-	sut := LoginRoute{}
-
-	httpRequest := HttpRequest{
-		Body: body{
-			email: "test@test.com",
-		},
-	}
-
-	httpResponse := sut.route(httpRequest)
-
-	if httpResponse.StatusCode != 400 {
-		t.Error("Should return 400 if no password is provided")
-	}
-
-}
-
-func TestLoginRoute(t *testing.T) {
-
-	sut := LoginRoute{}
-
-	emptyRequest := HttpRequest{}
-
-	httpResponse := sut.route(emptyRequest)
-
-	if httpResponse.StatusCode != 500 {
-		t.Error("Should return 500 if no  httpRequest is provided")
-	}
-
-}
-
-// func TestLoginRouteNoBody(t *testing.T) {
-// 	// Erro do programador, o Go não compila com objeto inválido
 // 	sut := LoginRoute{}
 
-// 	httpResponse := sut.route(interface{})
+// 	httpRequest := HttpRequest{
+// 		Body: body{
+// 			password: "123456",
+// 		},
+// 	}
 
-// 	if httpResponse.StatusCode != 500 {
-// 		t.Error("Should return 500 if no  httpRequest has no body")
+// 	httpResponse, err := sut.route(httpRequest)
+
+// 	if httpResponse.StatusCode != 400 {
+// 		t.Errorf("Should return 400 if no email is provided: %s ", err)
+// 	}
+// }
+// func TestPasswordIsProvided(t *testing.T) {
+
+// 	sut := LoginRoute{}
+
+// 	httpRequest := HttpRequest{
+// 		Body: body{
+// 			email: "test@test.com",
+// 		},
+// 	}
+
+// 	httpResponse, err := sut.route(httpRequest)
+
+// 	if httpResponse.StatusCode != 400 {
+// 		t.Errorf("Should return 400 if no password is provided: %s ", err)
 // 	}
 
 // }
+
+// func TestLoginRoute(t *testing.T) {
+
+// 	sut := LoginRoute{}
+
+// 	emptyRequest := HttpRequest{}
+
+// 	httpResponse, err := sut.route(emptyRequest)
+
+// 	if httpResponse.StatusCode != 500 {
+// 		t.Errorf("Should return 500 if no  httpRequest is provided: %s ", err)
+// 	}
+
+// }
+
+// // func TestLoginRouteNoBody(t *testing.T) {
+// // 	// Erro do programador, o Go não compila com objeto inválido
+// // 	sut := LoginRoute{}
+
+// // 	httpResponse := sut.route(interface{})
+
+// // 	if httpResponse.StatusCode != 500 {
+// // 		t.Error("Should return 500 if no  httpRequest has no body")
+// // 	}
+
+// // }
