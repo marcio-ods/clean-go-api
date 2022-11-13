@@ -3,13 +3,15 @@ package routers
 // https://www.youtube.com/watch?v=lvvPlJCMuFw&list=PL9aKtVrF05DyEwK5kdvzrYXFdpZfj1dsG&index=3
 // 13 min
 import (
-	"testing"
-
+	"github.com/marcio-ods/clean-go-api/domain/usecases"
 	"github.com/marcio-ods/clean-go-api/presentation/helpers"
+	"testing"
 )
 
-var makeSut = func() LoginRouter {
-	return NewLoginRouter()
+var makeSut = func() (LoginRouter, usecases.AuthUseCase) {
+	authUseCase := usecases.NewAuthUseCase()
+	sut := NewLoginRouter(authUseCase)
+	return sut, authUseCase
 }
 
 // func TestLoginRouter500(t *testing.T) {
@@ -26,7 +28,7 @@ var makeSut = func() LoginRouter {
 //	}
 func TestLoginRouter(t *testing.T) {
 
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	emptyRequest := helpers.NewHttpLoginRequest()
 
@@ -39,7 +41,7 @@ func TestLoginRouter(t *testing.T) {
 
 func TestPasswordIsProvided(t *testing.T) {
 
-	sut := makeSut()
+	sut, _ := makeSut()
 
 	httpRequest := helpers.HttpLoginRequest{
 		Email: "test@test.com",
@@ -53,7 +55,7 @@ func TestPasswordIsProvided(t *testing.T) {
 
 }
 func TestEmailIsProvided(t *testing.T) {
-	sut := makeSut()
+	sut, _ := makeSut()
 	httpRequest := helpers.HttpLoginRequest{
 		Password: "test@test.com",
 	}
@@ -62,16 +64,32 @@ func TestEmailIsProvided(t *testing.T) {
 		t.Errorf("Should return 400 if no email is provided: %s ", httpResponse.Detail)
 	}
 }
-func TestAuthUseCaseWhitCorrectParams(t *testing.T) {
-	sut := makeSut()
+
+func TestCredentials(t *testing.T) {
+	sut, _ := makeSut()
 	httpRequest := helpers.HttpLoginRequest{
 		Password: "test@test.com",
+		Email:    "test@test.com",
 	}
 	httpResponse := sut.Route(httpRequest)
-	if httpResponse.StatusCode != 400 {
-		t.Errorf("Should return 400 if no email is provided: %s ", httpResponse.Detail)
+	if httpResponse.StatusCode == 401 {
+		t.Error("Should return 401 when invalid credentials are provided")
 	}
 }
+
+// func TestAuthUseCaseWhitCorrectParams(t *testing.T) {
+// 	sut, authUseCase := makeSut()
+// 	httpRequest := helpers.HttpLoginRequest{
+// 		Password: "123456",
+// 		Email:    "test@test.com",
+// 	}
+// 	sut.Route(httpRequest)
+
+// 	if authUseCase.Email != httpRequest.Email {
+// 		t.Error("TestAuthUseCaseWhitCorrectParams")
+// 	}
+
+// }
 
 // func TestLoginRoute(t *testing.T) {
 
